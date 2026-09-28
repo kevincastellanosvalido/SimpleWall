@@ -1,0 +1,52 @@
+.inputBox{
+    justify-content: center;
+    display: flex;
+}
+.postInput{
+    width: min(600px, 90vw);
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    background-color: #4E4A59;
+    margin-right: 10px;
+}
+.submitButton{
+    padding: 10px 20px;
+    border: none;
+    border-radius: 10px;
+    background-color: #007BFF;
+    color: white;
+    cursor: pointer;
+}
+
+.posts{
+    margin-top: 50px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+.post{
+    width: min(600px, 90vw);
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    background-color: #c7cce0;
+}
+.postTime{
+    display: block;
+    margin-bottom: 10px;
+    font-size: 0.8em;
+    color: #666;
+}
+
+.likes{
+    display: block;
+    margin-bottom: 4px;
+    color: black;
+    margin-left: auto;
+}
+
+.reportButton{
+    float: right;
+}
