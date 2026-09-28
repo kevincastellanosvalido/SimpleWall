@@ -23,23 +23,32 @@ postButton.addEventListener("click", () =>{
 
     // time the post was made(static, functionality will be added later on)
     const postTime = document.createElement("span");
-    postTime.classList.add("postTime")
-    postTime.textContent = ("Just now")
-
-    // number of likes(static, functionality will be added later on)
-    const likes = document.createElement("span");
-    likes.classList.add("likes")
-    likes.textContent = "0 likes";
+    postTime.classList.add("postTime");
+    postTime.textContent = ("Just now");
 
     // like button
     const likeButton = document.createElement("button");
     likeButton.classList.add("likeButton");
     likeButton.textContent = "Like";
 
+    // number of likes(static, functionality will be added later on)
+    let numberofLikes = 0;
+    const likes = document.createElement("span");
+    likes.classList.add("likes")
+    likes.textContent =  numberofLikes + " likes";
+    likeButton.addEventListener("click", () => {
+        numberofLikes += 1;
+        likes.textContent =  numberofLikes + " likes";
+    });
+    
     // dislike button
     const dislikeButton = document.createElement("button");
     dislikeButton.classList.add("dislikeButton");
     dislikeButton.textContent = "Dislike";
+    dislikeButton.addEventListener("click", () =>{
+        numberofLikes -= 1;
+        likes.textContent = numberofLikes + " likes";
+    });
 
     // adds text and buttons to the post, but does not add it to the page
     newPost.append(
