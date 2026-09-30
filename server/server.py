@@ -50,6 +50,29 @@ class API(BaseHTTPRequestHandler):
 
                 body = self.rfile.read(bodyLength)
                 data = json.loads(body)
+
+                if (isinstance(data, dict)): # check that the parsed JSON is an object
+                    print("Parsed JSON is an object!!")
+                else:
+                    raise ValueError(f"Valid JSON, but {type(data).__name__}, not object")
+
+                content = data.get("content")
+
+                if(isinstance(content, str)): # check that the content is a string
+                    print("Success! Content is a string!")
+                    content = content.strip()
+                else:
+                    raise ValueError(f"Error! Content is not a string, it's a {type(data).__name__}")
+
+                if(len(content) <= 400 and len(content) > 0): # check that the string length is appropriate
+                    print("Content is long enough!")
+                else:
+                    if(len(content) > 400):
+                        raise ValueError(f"Length must not exceed 400 characters! String is {len(content) - 400} over!")
+                    else:
+                        raise ValueError("Length must be more than 0 characters!")
+                        
+                
             except(ValueError, UnicodeDecodeError):
                 self.send_response(400)
                 self.end_headers()
