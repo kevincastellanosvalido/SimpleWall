@@ -43,7 +43,7 @@ class API(BaseHTTPRequestHandler):
 
     def do_POST(self): # handles POST requests
         if (self.path == '/api/posts'): # handles the posting of posts
-            try:
+            try: # validating that the content is all valid
                 bodyLength = int(self.headers.get("Content-Length", "0"))
                 if(bodyLength <= 0):
                     raise ValueError("Empty request body")
@@ -70,13 +70,19 @@ class API(BaseHTTPRequestHandler):
                     if(len(content) > 400):
                         raise ValueError(f"Length must not exceed 400 characters! String is {len(content) - 400} over!")
                     else:
-                        raise ValueError("Length must be more than 0 characters!")
-                        
+                        raise ValueError("Length must be more than 0 characters!")          
                 
-            except(ValueError, UnicodeDecodeError):
+            except(ValueError, UnicodeDecodeError): # if the content is not valid, error 400
                 self.send_response(400)
                 self.end_headers()
                 return
+
+            connection = sqlite3.connect(databasePath) # open DB connection
+            try: # insert content into DB
+                cursor = connection.execute("INSERT INTO posts (content) VALUES (?)", (content,))
+                connection.commit()
+            finally:
+                connection.close()
 
             self.send_response(200)
             self.send_header("Content-Type", "application/json")
