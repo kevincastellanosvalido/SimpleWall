@@ -4,6 +4,7 @@ import sqlite3
 from pathlib import Path
 
 serverDir = Path(__file__).resolve().parent
+clientDir = serverDir.parent / "client"
 schemaPath = serverDir / "database.sql"
 databasePath = serverDir / "simplewall.db"
 schema = schemaPath.read_text(encoding='utf-8')
@@ -36,6 +37,24 @@ class API(BaseHTTPRequestHandler):
             self.send_header('Content-Type', 'application/json')
             self.end_headers()
             self.wfile.write(json.dumps(posts).encode('utf-8'))
+        elif (self.path in ('/', '/index.css', '/functionality.js', '/images/favicon.png')):
+
+            files = { # client files to serve
+                '/': (clientDir / 'index.html', 'text/html; charset=utf-8'), 
+                '/index.css': (clientDir / 'index.css', 'text/css; charset=utf-8'),
+                '/functionality.js': (clientDir / 'functionality.js', 'text/javascript; charset=utf-8'),
+                '/images/favicon.png': (clientDir / 'images/favicon.png', 'image/png')
+            }
+
+            filePath, contentType = files[self.path]
+            if not filePath.is_file():
+                self.send_error(404)
+                return
+            
+            self.send_response(200)
+            self.send_header('Content-Type', contentType)
+            self.end_headers()
+            self.wfile.write(filePath.read_bytes())
 
         else: # return 404 if invalid API path
             self.send_response(404)
