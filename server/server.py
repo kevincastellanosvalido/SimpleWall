@@ -78,17 +78,27 @@ class API(BaseHTTPRequestHandler):
                 return
 
             connection = sqlite3.connect(databasePath) # open DB connection
+
+            connection.row_factory = sqlite3.Row # make rows accessible by column name
+
             try: # insert content into DB
                 cursor = connection.execute("INSERT INTO posts (content) VALUES (?)", (content,))
+                insertedRowID = cursor.lastrowid # store the ID of the row we just inserted
                 connection.commit()
+
+                row = connection.execute( # get latest post
+                    "SELECT id, content, createdAt, likes, numberofReports "
+                    "FROM posts WHERE id = ?",
+                    (insertedRowID,)
+                ).fetchone()
             finally:
                 connection.close()
 
-            self.send_response(200)
+            self.send_response(201)
             self.send_header("Content-Type", "application/json")
             self.end_headers()
 
-            response = {"message": "Request received!!!"}
+            response = dict(row)
             self.wfile.write(json.dumps(response).encode('utf-8'))
         else:
             self.send_response(404)
