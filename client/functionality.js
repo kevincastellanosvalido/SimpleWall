@@ -77,18 +77,28 @@ async function fetchPosts(){ // fetches posts from the API
     }
 } fetchPosts();
 
-postButton.addEventListener("click", () =>{ 
+postButton.addEventListener("click", async () =>{ // asynchronous click handler
     const text = postInput.value.trim();
     if(!text){ // checks whether there is text or not inside the postInput box
         return;
     }
+    else if(text.length > 400){ // if text is greater than 400 characters, reject it automatically.
+        console.log("Text too long.");
+        return;
+    }
     
-    const newPost = createPostElement({
-        content: text,
-        createdAt: "Just now",
-        likes: 0
-    });
+    try{ // makes the post to the API
+        const response = await fetch("/api/posts", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            }, 
+            body: JSON.stringify({content: text})
+        });
 
-    // adds the post to the page with every item inside it
-    document.querySelector(".posts").prepend(newPost);
+        console.log("POST status: ", response.status);
+    }
+    catch(error){
+        console.error("Could not post: ", error);
+    }
 });
