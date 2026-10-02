@@ -1,13 +1,8 @@
 const postInput = document.querySelector(".postInput");
 const postButton = document.querySelector(".submitButton");
 
-
-postButton.addEventListener("click", () =>{ 
-    const text = postInput.value.trim();
-    if(!text){ // checks whether there is text or not inside the postInput box
-        return;
-    }
-
+function createPostElement(post){
+    
     // creates the post div
     const newPost = document.createElement("div");
     newPost.classList.add("post");
@@ -19,12 +14,12 @@ postButton.addEventListener("click", () =>{
     // adds post content to the post div
     const postContent = document.createElement("p");
     postContent.classList.add("postContent");
-    postContent.textContent = text;
+    postContent.textContent = post.content;
 
     // time the post was made(static, functionality will be added later on)
     const postTime = document.createElement("span");
     postTime.classList.add("postTime");
-    postTime.textContent = ("Just now");
+    postTime.textContent = post.createdAt;
 
     // like button
     const likeButton = document.createElement("button");
@@ -32,7 +27,7 @@ postButton.addEventListener("click", () =>{
     likeButton.textContent = "Like";
 
     // number of likes(static, functionality will be added later on)
-    let numberofLikes = 0;
+    let numberofLikes = post.likes;
     const likes = document.createElement("span");
     likes.classList.add("likes")
     likes.textContent =  numberofLikes + " likes";
@@ -59,6 +54,40 @@ postButton.addEventListener("click", () =>{
         likeButton,
         dislikeButton
     );
+
+    return newPost;
+}
+
+async function fetchPosts(){ // fetches posts from the API
+    try{
+        const response = await fetch("/api/posts");
+        if(!response.ok){
+            throw new Error(`Could not load posts: ${response.status}`);
+        }
+
+        const posts = await response.json();
+        const postContainer = document.querySelector(".posts");
+
+        for(const post of posts){
+            postContainer.append(createPostElement(post));
+        }
+    }
+    catch(error){
+        console.error("Failed to posts: ", error);
+    }
+} fetchPosts();
+
+postButton.addEventListener("click", () =>{ 
+    const text = postInput.value.trim();
+    if(!text){ // checks whether there is text or not inside the postInput box
+        return;
+    }
+    
+    const newPost = createPostElement({
+        content: text,
+        createdAt: "Just now",
+        likes: 0
+    });
 
     // adds the post to the page with every item inside it
     document.querySelector(".posts").prepend(newPost);
