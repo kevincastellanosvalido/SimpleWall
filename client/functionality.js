@@ -93,7 +93,7 @@ postButton.addEventListener("click", async () =>{ // asynchronous click handler
             headers: {
                 "Content-Type": "application/json"
             }, 
-            body: JSON.stringify({content: text})
+            body: JSON.stringify({content: text}) // converts text into a json string
         });
 
         console.log("POST status: ", response.status);
