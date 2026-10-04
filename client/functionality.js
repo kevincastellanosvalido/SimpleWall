@@ -1,5 +1,6 @@
 const postInput = document.querySelector(".postInput");
 const postButton = document.querySelector(".submitButton");
+const postContainer = document.querySelector(".posts");
 
 function createPostElement(post){
     
@@ -66,7 +67,6 @@ async function fetchPosts(){ // fetches posts from the API
         }
 
         const posts = await response.json();
-        const postContainer = document.querySelector(".posts");
 
         for(const post of posts){
             postContainer.append(createPostElement(post));
@@ -95,6 +95,15 @@ postButton.addEventListener("click", async () =>{ // asynchronous click handler
             }, 
             body: JSON.stringify({content: text}) // converts text into a json string
         });
+
+        if(!response.ok){ // if the post doesn't go through, return error message with the response status
+            throw new Error(`Could not post: ${response.status}`);
+        }
+
+        const savedPost = await response.json();
+        postContainer.prepend(createPostElement(savedPost)); // add the post that was just created to the feed
+
+        postInput.value = ""; // clear up input box after post has been successfully made
 
         console.log("POST status: ", response.status);
     }
