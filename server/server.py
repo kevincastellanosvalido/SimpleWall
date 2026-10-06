@@ -119,6 +119,13 @@ class API(BaseHTTPRequestHandler):
 
             response = dict(row)
             self.wfile.write(json.dumps(response).encode('utf-8'))
+        elif(self.path == 'api/posts/{id}/like'): # like API endpoint
+            ''' 
+            TODO:
+                - {id} is the post's ID
+                - validate post ID
+                - increase the post's "likes" field in the database
+            '''
         else:
             self.send_response(404)
             self.end_headers()
